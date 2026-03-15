@@ -1,0 +1,128 @@
+# AI图像异常检测专家配置文件
+
+# 基础设置
+settings:
+  epsilon: 0.1  # 探索概率
+  high_uncertainty_threshold: 0.6  # 高不确定性阈值
+  max_debate_rounds: 3  # 最大辩论轮数
+  debate_convergence_threshold: 0.85  # 辩论收敛阈值(语义相似度)
+  min_quality_improvement: 0.05  # 每轮最小质量提升要求
+  dynamic_rounds: true  # 启用动态轮次调整
+
+# 专家定义
+experts:
+  - id: 0
+    name: "structure_anomaly"
+    display_name: "结构异常检测"
+    weight: 1.0
+    enabled: true
+    keywords: ["结构", "比例", "畸形", "扭曲", "手指", "五官", "细节", "structure", "proportion", "deformation"]
+    prompt_template: "请作为结构异常检测专家，详细分析此图像中可能存在的物体结构与细节异常。需要重点关注：\n1. 人体/生物结构错误：手指少于或多于5根、关节扭曲、五官错位（如眼睛一大一小）、牙齿排列混乱\n2. 物体比例失调：肢体过长、头部与身体比例失衡、家具尺寸不合常理\n3. 细节缺失或矛盾：衣物纹理断裂、头发粘连成块、文字或标志模糊/错误\n请详细指出图像中的所有结构异常，并评估其是否为AI生成的图像。原始问题是：{instruction}"
+    critique_template: "请作为结构异常检测专家，评估以下分析中关于图像结构异常描述的准确性和完整性：\n\n{response}\n\n请指出分析中的优点、不足之处以及可以改进的地方，尤其关注是否遗漏了重要的结构异常指标。"
+    revision_template: "请根据以下评论修改你的结构异常分析：\n\n原始分析：{original_response}\n\n评论：{critique}\n\n请提供一个更全面、更准确的结构异常分析。"
+  
+  - id: 1
+    name: "lighting_spatial"
+    display_name: "光照与空间逻辑检测"
+    weight: 1.0
+    enabled: true
+    keywords: ["光照", "阴影", "透视", "空间", "畸变", "照明", "lighting", "shadow", "perspective", "spatial"]
+    prompt_template: "请作为光照与空间逻辑检测专家，详细分析此图像中可能存在的光照与空间逻辑错误。需要重点关注：\n1. 阴影/高光矛盾：阴影方向与光源不一致、透明物体（如玻璃）未正确反射环境\n2. 透视畸变：建筑物线条歪斜、近景与远景比例失调、景深虚化不自然（如背景过度模糊）\n请详细指出图像中的所有光照与空间异常，并评估其是否为AI生成的图像。原始问题是：{instruction}"
+    critique_template: "请作为光照与空间逻辑检测专家，评估以下分析中关于图像光照与空间异常描述的准确性和完整性：\n\n{response}\n\n请指出分析中的优点、不足之处以及可以改进的地方，尤其关注是否正确识别了光源、阴影和透视问题。"
+    revision_template: "请根据以下评论修改你的光照与空间逻辑分析：\n\n原始分析：{original_response}\n\n评论：{critique}\n\n请提供一个更细致、更准确的光照与空间分析。"
+  
+  - id: 2
+    name: "physics_interaction"
+    display_name: "物理交互检测"
+    weight: 1.0
+    enabled: true
+    keywords: ["物理", "悬浮", "穿模", "重力", "流体", "交互", "physics", "floating", "interaction", "gravity"]
+    prompt_template: "请作为物理交互检测专家，详细分析此图像中可能存在的场景元素与物理交互矛盾。需要重点关注：\n1. 物体悬浮或穿模：杯子悬空无支撑、人物脚部陷入地面、手持物穿透手掌\n2. 流体/动态异常：水流无重力感、火焰形状重复、布料褶皱不符合人体姿态\n请详细指出图像中的所有物理交互异常，并评估其是否为AI生成的图像。原始问题是：{instruction}"
+    critique_template: "请作为物理交互检测专家，评估以下分析中关于图像物理交互异常描述的准确性和完整性：\n\n{response}\n\n请指出分析中的优点、不足之处以及可以改进的地方，尤其关注是否正确识别了物体间的物理关系问题。"
+    revision_template: "请根据以下评论修改你的物理交互分析：\n\n原始分析：{original_response}\n\n评论：{critique}\n\n请提供一个更深入、更全面的物理交互分析。"
+
+  - id: 3
+    name: "technical_artifacts"
+    display_name: "技术痕迹检测"
+    weight: 1.0
+    enabled: true
+    keywords: ["伪影", "纹理", "噪点", "重复", "频谱", "artifacts", "texture", "repetition", "noise", "spectrum"]
+    prompt_template: "请作为技术痕迹检测专家，详细分析此图像中可能存在的AI生成特征。需要重点关注：\n1. 高频伪影：背景出现'水波纹'、网格状噪点（扩散模型常见）\n2. 纹理重复：树叶、砖墙等背景元素机械性复制粘贴\n3. 频谱异常：通过观察发现高频区域分布不自然\n请详细指出图像中的所有技术痕迹异常，并评估其是否为AI生成的图像。原始问题是：{instruction}"
+    critique_template: "请作为技术痕迹检测专家，评估以下分析中关于图像技术痕迹描述的准确性和完整性：\n\n{response}\n\n请指出分析中的优点、不足之处以及可以改进的地方，尤其关注是否正确识别了AI生成的技术特征。"
+    revision_template: "请根据以下评论修改你的技术痕迹分析：\n\n原始分析：{original_response}\n\n评论：{critique}\n\n请提供一个更全面、更准确的技术痕迹分析。"
+
+  - id: 4
+    name: "intuition_uncanny"
+    display_name: "直觉违和感检测"
+    weight: 1.0
+    enabled: true
+    keywords: ["违和感", "直觉", "诡异", "不自然", "逻辑矛盾", "uncanny", "intuition", "weird", "unnatural", "contradictory"]
+    prompt_template: "请作为直觉违和感检测专家，详细分析此图像中可能存在的人类直觉'违和感'。需要重点关注：\n1. 细节诡异感：人物眼神呆滞、表情僵硬、皮肤纹理塑料感\n2. 逻辑矛盾：冰块在火焰中燃烧、沙漠中出现极地动物等违背常识的组合\n请详细指出图像中所有引起违和感的元素，并评估其是否为AI生成的图像。原始问题是：{instruction}"
+    critique_template: "请作为直觉违和感检测专家，评估以下分析中关于图像违和感描述的准确性和完整性：\n\n{response}\n\n请指出分析中的优点、不足之处以及可以改进的地方，尤其关注是否抓住了引起人类直觉不适的关键因素。"
+    revision_template: "请根据以下评论修改你的直觉违和感分析：\n\n原始分析：{original_response}\n\n评论：{critique}\n\n请提供一个更深入、更全面的直觉违和感分析。"
+
+# 评论专家定义
+critic_experts:
+  - id: 5
+    name: "evidence_checker"
+    display_name: "证据检查专家"
+    enabled: true
+    critique_template: "请作为证据检查专家，评估以下分析中的证据充分性：\n\n{response}\n\n原始问题：{instruction}\n\n请仔细检查分析是否提供了具体的视觉证据来支持其结论，而不仅仅是主观判断。指出哪些异常检测结果有明确的视觉证据支持，哪些可能只是猜测。{score_request}"
+    
+  - id: 6
+    name: "false_positive_reducer"
+    display_name: "误报减少专家"
+    enabled: true
+    critique_template: "请作为误报减少专家，评估以下分析中可能存在的误报：\n\n{response}\n\n原始问题：{instruction}\n\n请仔细检查分析中指出的'异常'是否真的反常，还是可能是故意的艺术风格、特殊拍摄角度或真实存在的罕见现象。指出哪些'异常'可能是正常的特殊情况。{score_request}"
+
+# 专家组合策略
+combinations:
+  - id: 7
+    name: "physics_technical"
+    display_name: "物理+技术分析"
+    experts: [2, 3]  # 物理交互 + 技术痕迹
+    weight: 1.0
+    enabled: true
+    prompt_template: "请整合以下两位专家对图像的分析，提供综合检测：\n\n物理交互检测专家: {expert_2_response}\n\n技术痕迹检测专家: {expert_3_response}\n\n请提供一个完整、连贯的图像异常分析，综合上述两位专家的见解。原始问题是：{instruction}"
+  
+  - id: 8
+    name: "technical_intuition"
+    display_name: "技术+直觉分析"
+    experts: [3, 4]  # 技术痕迹 + 直觉违和感
+    weight: 1.0
+    enabled: true
+    prompt_template: "请整合以下两位专家对图像的分析，提供综合检测：\n\n技术痕迹检测专家: {expert_3_response}\n\n直觉违和感检测专家: {expert_4_response}\n\n请提供一个完整、连贯的图像异常分析，综合上述两位专家的见解。原始问题是：{instruction}"
+  
+  - id: 9
+    name: "comprehensive_analysis"
+    display_name: "全面异常分析"
+    experts: [0, 1, 2, 3, 4]  # 所有专家
+    weight: 1.2  # 给全面分析一个稍高的权重
+    enabled: true
+    prompt_template: "请整合以下五位专家对同一图像的分析，提供全面的异常检测：\n\n结构异常检测专家: {expert_0_response}\n\n光照与空间逻辑检测专家: {expert_1_response}\n\n物理交互检测专家: {expert_2_response}\n\n技术痕迹检测专家: {expert_3_response}\n\n直觉违和感检测专家: {expert_4_response}\n\n原始问题是：{instruction}\n\n请提供一个全面、连贯的图像分析，整合以上五位专家的见解，直接回答原始问题。给出综合结论：此图像是否为AI生成，可信度评分(1-10)，以及最具说服力的三个证据。"
+
+# 路由专家配置
+router:
+  enabled: true
+  model_name: "qwen/qwen-2.5-vl-72b-instruct"
+  description: "分析图像并确定最合适的专家组合"
+  prompt_template: |
+    你是一个精确的图像分析路由专家。你的任务是分析用户提供的图像，并确定哪些专家最适合判断该图像是否为AI生成的异常图像。
+    
+    可用的专家有：
+    {experts_list}
+    
+    用户问题：{question}
+    
+    请分析这个图像适合哪些专家来检测异常。对每个专家，给出0-10的相关性评分。评分应该反映专家处理此图像的适合度。
+    
+    以JSON格式返回结果，例如：
+    ```json
+    {
+      "structure_anomaly": 8,
+      "lighting_spatial": 5,
+      "physics_interaction": 2,
+      "technical_artifacts": 9,
+      "intuition_uncanny": 7
+    }
+    ``` 

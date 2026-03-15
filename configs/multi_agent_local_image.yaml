@@ -1,0 +1,67 @@
+# GAM-Agent/configs/multi_agent_local_image.yaml
+# 本地多智能体图像处理配置文件 (适配 InternVL3 模型)
+
+# 数据集配置
+dataset:
+  # json_file: "./PATH_TO_LOCAL_RESOURCE"
+  json_file: "./PATH_TO_LOCAL_RESOURCE"
+  video_dir: "./PATH_TO_LOCAL_RESOURCE"            # 视频目录路径（train是原始视频，train_compressed是压缩后的视频）
+  use_original_video: true                # 是否使用原始视频
+  # video_fps: 3.0                           # 视频帧率 貌似没有用
+  num_frames: 3                          # 每个视频采样的帧数，-1表示使用所有帧
+  image_size: 224                          # 图像大小
+  batch_size: 4                            # 批处理大小
+  shuffle: true                            # 随机打乱数据
+  num_workers: 4                           # 数据加载线程数
+
+# 模型配置
+local_model:
+  model_path: "OpenGVLab/InternVL3-14B"  # 使用的模型路径 (默认 14B, 可根据需要修改为 8B 等)
+  # 可选：自定义生成参数 (会覆盖 AgentModel 中的默认值)
+  # generation_config:
+  #   do_sample: False
+  #   temperature: 0.0
+  #   max_new_tokens: 1024
+  #   top_p: 0.8
+  #   num_beams: 1
+  # 可选：指定用于相似度计算的 BERT 模型
+  # similarity_model: "bert-base-multilingual-cased" # 例子
+
+# 专家(Agent)配置
+experts:
+  config_file: "configs/FunQA_expert_Choice_debate.yaml" 
+  # 专家系统设置
+  settings:
+    epsilon: 0.1                              # MAB 探索率 (如果使用 MAB)
+    high_uncertainty_threshold: 0.6           # 高不确定性阈值 (如果用于决策)
+    use_debate: true                          # 是否启用辩论功能 (默认开启)
+    debate_rounds: 1                          # 辩论轮数
+
+# 评估指标
+metrics:
+  use_bleu: true
+  use_rouge: true
+  use_bert_score: false  # 测试阶段可以禁用BERTScore以提高速度
+  bert_model: "bert-base-chinese"
+
+# 训练配置
+training:
+  learning_rate: 5e-5
+  weight_decay: 0.01
+  max_epochs: 2       # 仅运行两个epoch作为测试
+  save_interval: 1    # 每个epoch保存一次
+  evaluation_interval: 1
+  checkpoint_dir: "checkpoints/funqa_test"  # 使用特定目录保存检查点
+  log_dir: "logs/funqa_test"               # 使用特定目录保存日志 
+
+# 辩论功能配置
+debate:
+  max_rounds: 3                             # 允许的最大辩论轮数 (保持与旧文件一致)
+  convergence_threshold: 0.85               # 辩论收敛阈值 (如果实现)
+  min_quality_improvement: 0.05             # 最小质量改进要求 (如果实现)
+  # 评论专家和质量度量等设置通常在 experts.config_file 引用的文件中定义
+
+# 演示脚本配置
+demo:
+  demo_image_path: "./PATH_TO_LOCAL_RESOURCE" # 演示脚本使用的图像路径
+ 

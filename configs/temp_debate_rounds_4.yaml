@@ -1,0 +1,121 @@
+# Expert Agent Configuration File for Local Images and Enhanced Debate
+
+# Basic Settings (Adjusted for potential image tasks)
+settings:
+  epsilon: 0.1  # Exploration probability (MAB, might be less relevant now)
+  high_uncertainty_threshold: 0.6  # High uncertainty threshold for triggering actions
+  debate_convergence_threshold: 0.85  # Convergence threshold (if needed for stopping debate)
+  min_quality_improvement: 0.05  # Minimum quality improvement (if needed for stopping debate)
+  dynamic_rounds: true  # Allow dynamic round adjustment (if applicable)
+  use_debate: true # Explicitly enable the enhanced debate process
+  debate_rounds: 4
+# Expert Definitions (Updated for Image Analysis)
+experts:
+  - id: 0
+    name: "object_recognition"
+    display_name: "Object Recognition"
+    weight: 1.0
+    enabled: true
+    keywords: ["what is", "identify", "object", "item", "recognize", "label", "find"]
+    prompt_template: "As an object recognition expert, identify and list all significant objects visible in the image(s). Provide details about their appearance, count if possible, and relative location. For key claims, mention the visual evidence. Original question: {instruction}"
+    critique_template: "Evaluate the object recognition part of the analysis:
+
+{response}
+
+Are the objects correctly identified? Are there any missed objects or incorrect descriptions? Base your critique strictly on the visual evidence."
+    revision_template: "Based on the critique '{critique}', please revise your object recognition analysis: {original_response}. Focus on accuracy and completeness according to the visual evidence. Original question: {instruction}"
+
+  - id: 1
+    name: "scene_description"
+    display_name: "Scene Description"
+    weight: 1.0
+    enabled: true
+    keywords: ["describe", "scene", "environment", "background", "setting", "looks like", "where is"]
+    prompt_template: "As a scene description expert, describe the overall scene shown in the image(s), including the location, environment, lighting, atmosphere, and spatial relationships between elements. For key claims, mention the visual evidence. Original question: {instruction}"
+    critique_template: "Evaluate the scene description part of the analysis:
+
+{response}
+
+Is the description accurate and comprehensive? Does it capture the main elements and atmosphere of the scene? Base your critique strictly on the visual evidence."
+    revision_template: "Based on the critique '{critique}', please revise your scene description: {original_response}. Focus on capturing the visual details accurately. Original question: {instruction}"
+
+  - id: 2
+    name: "text_ocr"
+    display_name: "Text/OCR Analysis"
+    weight: 1.0
+    enabled: true
+    keywords: ["text", "read", "sign", "label", "document", "ocr", "writing", "number"]
+    prompt_template: "As an OCR expert, identify and transcribe any text visible in the image(s). Pay attention to signs, labels, documents, or any written content. Note the location of the text if possible. For key claims, mention the visual evidence. Original question: {instruction}"
+    critique_template: "Evaluate the OCR/text transcription part of the analysis:
+
+{response}
+
+Is the transcribed text accurate? Is any text missed? Is the location noted correctly? Base your critique strictly on the visual evidence."
+    revision_template: "Based on the critique '{critique}', please revise your OCR analysis: {original_response}. Ensure accuracy and completeness of the transcribed text based on the visual evidence. Original question: {instruction}"
+
+  - id: 3
+    name: "color_attribute"
+    display_name: "Color & Attribute Analysis"
+    weight: 1.0
+    enabled: true
+    keywords: ["color", "attribute", "material", "shape", "texture", "appearance"]
+    prompt_template: "As a visual attribute expert, analyze the colors, shapes, materials, and textures of the main objects or areas in the image(s). Describe their prominent visual characteristics. For key claims, mention the visual evidence. Original question: {instruction}"
+    critique_template: "Evaluate the color and attribute analysis:
+
+{response}
+
+Are the descriptions of colors, shapes, materials, etc., accurate according to the image? Are there any significant visual attributes missed? Base your critique strictly on the visual evidence."
+    revision_template: "Based on the critique '{critique}', please revise your color and attribute analysis: {original_response}. Focus on accurate description of visual properties. Original question: {instruction}"
+
+
+# Critic Expert Definitions (For Enhanced Debate)
+critic_experts:
+  - id: 4 # Start IDs after regular experts
+    name: "fact_checker_image"
+    display_name: "Fact Checker (Image)"
+    enabled: true
+    # This template will likely be overridden by the specific critique prompt in run_enhanced_debate_process
+    # but it's good to have a placeholder.
+    critique_template: |
+      Act as a fact-checking expert focusing on visual evidence.
+      Original Question: {instruction}
+      Current Answer: {response}
+      Critique Request: {critique_request} # Placeholder for specific claims/regions
+      Please evaluate the factual accuracy of the claims based *only* on the image content provided.
+      Point out inaccuracies and suggest corrections. State your confidence (0-100%).
+
+  - id: 5
+    name: "completeness_checker"
+    display_name: "Completeness Checker"
+    enabled: true
+    # This template will likely be overridden by the specific critique prompt in run_enhanced_debate_process
+    critique_template: |
+      Act as a completeness analysis expert for image descriptions.
+      Original Question: {instruction}
+      Current Answer: {response}
+      Critique Request: {critique_request} # Placeholder for specific claims/regions
+      Evaluate if the analysis fully addresses the question based on the *entire* image content.
+      Are there missing details or aspects from the image(s) that are relevant and should have been included? Provide suggestions. State your confidence (0-100%).
+
+# Debate Control Settings (For Enhanced Debate)
+debate_settings:
+  quality_metrics: # These might be used for evaluating critique quality or final answer quality internally
+    - name: "relevance"
+      weight: 0.4
+      description: "Relevance to the question and image(s)"
+    - name: "accuracy"
+      weight: 0.4
+      description: "Accuracy based on visual evidence"
+    - name: "completeness"
+      weight: 0.2
+      description: "Completeness of the visual description"
+
+  filter_rules: # Rules potentially for filtering critiques (though current code might not use them heavily)
+    min_critique_length: 10 # Minimum critique length (characters)
+    max_critique_similarity: 0.95 # Max similarity between critique and original text (to avoid echo)
+    required_suggestion_count: 0 # Minimum required suggestions in a critique
+
+# --- Sections below are removed as they are not used by agent_model_local_image_enhanced_debate.py ---
+# Critic Expert Definitions 这后面的不再使用
+# Expert Combination Strategies 这里不再使用
+# Router Expert Configuration

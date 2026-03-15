@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+title: "GAM-Agent"
+message: "If you use this repository, please cite the accompanying paper."
+type: software
+authors:
+  - family-names: Zhang
+    given-names: Jusheng
+  - family-names: Fan
+    given-names: Yijia
+  - family-names: Lin
+    given-names: Wenjun
+  - family-names: Chen
+    given-names: Ruiqi
+  - family-names: Jiang
+    given-names: Haoyi
+  - family-names: Chai
+    given-names: Wenhao
+  - family-names: Wang
+    given-names: Jian
+  - family-names: Wang
+    given-names: Keze
+preferred-citation:
+  type: article
+  title: "GAM-Agent: Game-Theoretic and Uncertainty-Aware Collaboration for Complex Visual Reasoning"
+  authors:
+    - family-names: Zhang
+      given-names: Jusheng
+    - family-names: Fan
+      given-names: Yijia
+    - family-names: Lin
+      given-names: Wenjun
+    - family-names: Chen
+      given-names: Ruiqi
+    - family-names: Jiang
+      given-names: Haoyi
+    - family-names: Chai
+      given-names: Wenhao
+    - family-names: Wang
+      given-names: Jian
+    - family-names: Wang
+      given-names: Keze
+  journal: "arXiv preprint arXiv:2505.23399"
+  year: 2025
+  url: "https://arxiv.org/abs/2505.23399"

@@ -1,0 +1,139 @@
+# Expert Agent Configuration File
+
+# Basic Settings
+settings:
+  epsilon: 0.1  # Exploration probability
+  high_uncertainty_threshold: 0.6  # High uncertainty threshold
+  max_debate_rounds: 3  # Maximum debate rounds
+  debate_convergence_threshold: 0.85  # Debate convergence threshold (semantic similarity)
+  min_quality_improvement: 0.05  # Minimum quality improvement requirement per round
+  dynamic_rounds: true  # Enable dynamic round adjustment
+  debate_rounds: 4  # Maximum debate rounds
+s
+# Expert Definitions
+experts:
+  - id: 0
+    name: "expert_1"
+    display_name: "expert_1"
+    weight: 1.0
+    enabled: true
+    keywords: ["video", "content", "understanding", "analysis", "description", "analyze", "describe"]
+    prompt_template: "As a video comprehension expert, please analyze the content of this video in detail. The key points to pay attention to are: dynamic elements, screen switching, event development, and character behavior in the video. And answer the following multiple-choice questions. You need to provide specific options and analysis process. Next, you will answer a multiple-choice question based on the number of frames of the uploaded video. Original question: {instruction}\n\nOptions: {options}, please put your chosen answer in {answer} (wrap the specific option in {}), your answer must be from the given options.Explain why you chose this answer."
+    critique_template: "As a video understanding expert, please evaluate the accuracy and completeness of the following video content analysis:\n\n{response}\n\nPlease point out the strengths, weaknesses, and areas for improvement, especially focusing on whether the video description is comprehensive and accurate."
+    revision_template: "Please revise your video analysis based on the following comments:\n\nOriginal analysis: {original_response}\n\nComments: {critique}\n\nPlease provide a more comprehensive and accurate video analysis and answer the multiple choice question, providing specific options and analysis process. Original question: {instruction}\n\nOptions: {options}, please put your chosen answer in {answer} (wrap the specific option in {}), your answer must be from the given options."
+  
+  - id: 1
+    name: "expert_2"
+    display_name: "expert_2"
+    weight: 1.0
+    enabled: true
+    keywords: ["what's happening", "action", "what happened", "how to do", "activity", "doing", "happen"]
+    prompt_template: "As a motion analysis expert, please analyze all the actions and movements in this video in detail. The key points to pay attention to are: character actions, object movements, action sequences, action speed, and action purpose. And answer the following multiple-choice questions. You need to provide specific options and analysis process. Next, you will answer a multiple-choice question based on the number of frames of the uploaded video. Original question: {instruction}\n\nOptions: {options}, please put your chosen answer in {answer} (wrap the specific option in {}), your answer must be from the given options.Explain why you chose this answer."
+    critique_template: "As an action analysis expert, please evaluate the accuracy and completeness of the action descriptions in the following analysis:\n\n{response}\n\nPlease point out the strengths, weaknesses, and areas for improvement, especially focusing on whether the action descriptions are coherent, accurate, and detailed."
+    revision_template: "Please revise your action analysis based on the following comments:\n\nOriginal analysis: {original_response}\n\nComments: {critique}\n\nPlease provide a more detailed and accurate action analysis and answer the multiple choice question, providing specific options and analysis process. Original question: {instruction}\n\nOptions: {options}, please put your chosen answer in {answer} (wrap the specific option in {}), your answer must be from the given options."
+  
+  - id: 2
+    name: "expert_3"
+    display_name: "expert_3"
+    weight: 1.0
+    enabled: true
+    keywords: ["object", "item", "object description", "appearance", "shape", "material", "movement", "interaction"]
+    prompt_template: "As an object understanding expert, please analyze the main objects that appear in the video in detail. Key points to pay attention to: object appearance characteristics (color/shape/material), movement trajectory, interaction with other objects, position changes in the picture, and possible functional attributes of the object. Next, you will answer a multiple-choice question based on the number of frames of the uploaded video. Original question: {instruction}\n\nOptions: {options}, please put your chosen answer in {answer} (wrap the specific option in {}), your answer must be from the given options.Explain why you chose this answer."
+    critique_template: "As an object understanding expert, please evaluate the accuracy and completeness of the object descriptions in the following analysis:\n\n{response}\n\nPlease point out the strengths, missing object features, and inadequacies in describing object dynamics, especially focusing on whether object details are clear and motion trajectories are accurately captured."
+    revision_template: "Please revise your object analysis based on the following comments:\n\nOriginal analysis: {original_response}\n\nComments: {critique}\n\nPlease provide a more precise object analysis, supplement missing details and dynamic process descriptions, and answer the multiple choice question, providing specific options and analysis process. Original question: {instruction}\n\nOptions: {options}, please put your chosen answer in {answer} (wrap the specific option in {}), your answer must be from the given options."
+
+# Critic Expert Definitions 这后面的不再使用
+critic_experts:
+  - id: 3
+    name: "fact_checker"
+    display_name: "Fact Checker"
+    enabled: true
+    critique_template: "As a fact checker, please evaluate the factual accuracy of the following analysis:\n\n{response}\n\nOriginal question: {instruction}\n\nPlease point out potential factual errors or inaccuracies in the analysis and provide suggestions for improvement. {score_request}"
+    
+  - id: 4
+    name: "logic_analyzer"
+    display_name: "Logic Analyzer"
+    enabled: true
+    critique_template: "As a logic analyzer, please evaluate the logical coherence and reasoning quality of the following analysis:\n\n{response}\n\nOriginal question: {instruction}\n\nPlease point out logical gaps, inconsistencies, or insufficient reasoning in the analysis, and provide suggestions for improvement. {score_request}"
+    
+  - id: 5
+    name: "completeness_evaluator"
+    display_name: "Completeness Evaluator"
+    enabled: true
+    critique_template: "As a completeness evaluator, please assess whether the following analysis comprehensively answers the original question:\n\nOriginal question: {instruction}\n\nAnalysis: {response}\n\nPlease point out missing important information or inadequately addressed aspects, and provide suggestions for improvement. {score_request}"
+
+# Expert Combination Strategies 这里不再使用
+combinations:
+  - id: 6
+    name: "scene_action"
+    display_name: "Scene + Action"
+    experts: [0, 1]  # Video Understanding + Action Analysis
+    weight: 0.0 
+    enabled: true
+    prompt_template: "Please integrate the analyses from the following two experts to provide a comprehensive video understanding:\n\nVideo Understanding Expert: {expert_0_response}\n\nAction Analysis Expert: {expert_1_response}\n\nPlease provide a complete and coherent video analysis, combining insights from both experts. Original question: {instruction}\n\nOptions are: {options}\n\nPlease provide a comprehensive and coherent video analysis, integrating insights from both experts, directly answer the multiple choice question based on the original question and options, and provide your analysis process. Please put your final answer in {answer} (wrap the specific option in {}), your answer must be from the given options."
+  
+  - id: 7
+    name: "action_semantic"
+    display_name: "Action + Semantic"
+    experts: [1, 2]  # Action Analysis + Object Understanding
+    weight: 0.0
+    enabled: true
+    prompt_template: "Please integrate the analyses from the following two experts to provide a comprehensive video understanding:\n\nAction Analysis Expert: {expert_1_response}\n\nObject Understanding Expert: {expert_2_response}\n\nPlease provide a complete and coherent video analysis, combining insights from both experts. Original question: {instruction}\n\nOptions are: {options}\n\nPlease provide a comprehensive and coherent video analysis, integrating insights from both experts, directly answer the multiple choice question based on the original question and options, and provide your analysis process. Please put your final answer in {answer} (wrap the specific option in {}), your answer must be from the given options."
+  
+  - id: 8
+    name: "scene_semantic"
+    display_name: "Scene + Semantic"
+    experts: [0, 2]  # Video Understanding + Object Understanding
+    weight: 0.0
+    enabled: true
+    prompt_template: "Please integrate the analyses from the following two experts to provide a comprehensive video understanding:\n\nVideo Understanding Expert: {expert_0_response}\n\nObject Understanding Expert: {expert_2_response}\n\nPlease provide a complete and coherent video analysis, combining insights from both experts. Original question: {instruction}\n\nOptions are: {options}\n\nPlease provide a comprehensive and coherent video analysis, integrating insights from both experts, directly answer the multiple choice question based on the original question and options, and provide your analysis process. Please put your final answer in {answer} (wrap the specific option in {}), your answer must be from the given options."
+  
+  - id: 9
+    name: "full_ensemble"
+    display_name: "Full Integration"
+    experts: [0, 1, 2]  # All experts
+    weight: 1.2 # Slightly higher weight for full integration approach
+    enabled: true
+    prompt_template: "Please integrate the analyses from the following three experts to provide a comprehensive video understanding:\n\nVideo Understanding Expert: {expert_0_response}\n\nAction Analysis Expert: {expert_1_response}\n\nObject Understanding Expert: {expert_2_response}\n\nOriginal question: {instruction}\n\nOptions are: {options}\n\nPlease provide a comprehensive and coherent video analysis, integrating insights from all three experts, directly answer the multiple choice question based on the original question and options, and provide your analysis process. Please put your final answer in {answer} (wrap the specific option in {}), your answer must be from the given options."
+
+# Debate Control Settings 这里不再使用
+debate_settings:
+  quality_metrics:
+    - name: "relevance"
+      weight: 0.3
+      description: "Answer relevance to the question"
+    - name: "factuality" 
+      weight: 0.3
+      description: "Factual accuracy of the answer"
+    - name: "completeness"
+      weight: 0.4
+      description: "Answer completeness"
+  
+  filter_rules:
+    min_critique_length: 50  # Minimum critique length
+    max_critique_similarity: 0.95  # Maximum similarity between critique and original text (to prevent ineffective critiques)
+    required_suggestion_count: 1  # Required number of suggestions
+
+# Router Expert Configuration
+router:
+  enabled: true
+  model_name: "qwen/qwen-2.5-vl-72b-instruct"  # Use the same large model as the main model by default
+  description: "Analyze questions and determine the most suitable expert combination"
+  prompt_template: |
+    You are a precise question routing expert. Your task is to analyze user questions about videos and determine which experts are most suitable to answer the question.
+    
+    Available experts:
+    {experts_list}
+    
+    User question: {question}
+    
+    Please analyze which experts are suitable to answer this question. Give a relevance score of 0-10 for each expert. The score should reflect how suitable the expert is for handling this question.
+    
+    Return the result in JSON format, for example:
+    ```json
+    {
+      "scene_understanding": 8,
+      "action_analysis": 5,
+      "semantic_understanding": 2
+    }
+    ```

@@ -1,0 +1,31 @@
+# Configuration for Local Image Processing with Enhanced Debate Demo
+
+# Local Model Configuration
+local_model:
+  # Specify the path to your local multimodal model
+  # Example using InternVL3-14B (adjust as needed)
+  model_path: "./PATH_TO_LOCAL_RESOURCE"
+  # Add other model-specific parameters if required, e.g., device, dtype
+  # generation_config can be overridden here if needed, otherwise defaults in AgentModel are used.
+  # generation_config:
+  #   do_sample: false
+  #   max_new_tokens: 1024
+  #   num_beams: 1 
+
+# Expert(Agent) Configuration
+experts:
+  # Points to the file defining the experts, critics, and debate settings
+  config_file: "configs/ExpertConfig_local_images_enhanced_debate.yaml" 
+
+# # Demo Specific Settings (Optional)
+# demo:
+#   # You can define default image paths for the demo script here
+#   demo_image_path1: "./PATH_TO_LOCAL_RESOURCE" 
+#   demo_image_path2: "./PATH_TO_LOCAL_RESOURCE"
+
+# --- Sections below are removed as they are not relevant for this demo script ---
+# dataset:
+# api:
+# metrics:
+# training:
+# debate: 
